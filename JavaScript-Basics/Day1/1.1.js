@@ -8,6 +8,7 @@
 // var a = 3;
 // var a = 5;
 // var a = 9;
+// a = 10;
 // console.log(a) 
 
 
@@ -18,6 +19,7 @@
 // console.log(a);
 
 // const a = 15;
+// a = 16;
 // console.log(a);
 
 //example 1 for keyword/variable (var)
@@ -102,3 +104,4 @@
 //   console.log(getDayName(5)); 
  
   
+// updated with all 
