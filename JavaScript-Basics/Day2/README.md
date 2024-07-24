@@ -1,0 +1,1 @@
+Write a function that takes a string as input and returns the string reversed. The function should not use any built-in methods for reversing the string.
