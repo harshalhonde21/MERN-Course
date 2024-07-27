@@ -101,18 +101,18 @@
 // objects in js
 
 
-// let person = {
-//     name: "Harshal", 
-//     age: 30,
-//     job: "Developer",
-//     greet: function () {
-//         console.log("Hello, my name is " + this.name);
-//     }   
-// };
+let person = {
+    name: "Harshal", 
+    age: 30,
+    job: "Developer",
+    greet: function () {
+        console.log("Hello, my name is " + this.name);
+    }   
+};
 
-// console.log(person.name); 
-// console.log(person["name"]);
-// console.log(person.greet())
+console.log(person.name); 
+console.log(person["name"]);
+console.log(person.greet())
 
 
 // let building = {
