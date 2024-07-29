@@ -1,0 +1,26 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  #title {
+    color: #333;
+  }
+  
+  .text {
+    color: #666;
+  }
+  
+  button {
+    margin: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  #output {
+    margin-top: 20px;
+    font-size: 20px;
+    color: #007BFF;
+  }
+  
