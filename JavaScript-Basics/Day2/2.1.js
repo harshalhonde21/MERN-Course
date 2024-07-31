@@ -73,6 +73,21 @@
 // console.log(`Maximum value: ${max}`);
 
 
+let arr = [2,50,8,96,888,57,36,89,57,45,12,5,8,6,5];
+let max = arr[0];
+
+for (let i = 1; i < arr.length; i++){
+    if(arr[i] > max){
+        max = arr[i]
+    }
+}
+
+console.log(max)
+
+
+
+
+
 
 // let arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
 // let max = arr[0]; 
@@ -101,18 +116,18 @@
 // objects in js
 
 
-let person = {
-    name: "Harshal", 
-    age: 30,
-    job: "Developer",
-    greet: function () {
-        console.log("Hello, my name is " + this.name);
-    }   
-};
+// let person = {
+//     name: "Harshal", 
+//     age: 30,
+//     job: "Developer",
+//     greet: function () {
+//         console.log("Hello, my name is " + this.name);
+//     }   
+// };
 
-console.log(person.name); 
-console.log(person["name"]);
-console.log(person.greet())
+// console.log(person.name); 
+// console.log(person["name"]);
+// console.log(person.greet())
 
 
 // let building = {
