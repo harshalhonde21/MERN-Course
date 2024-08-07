@@ -75,3 +75,7 @@ mongoose
   )
   .catch((err) => console.log(`${err} is error`));
 ```
+
+
+
+![alt text](image-1.png)
