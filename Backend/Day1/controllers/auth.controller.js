@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../models/auth.model.js";
+import { createToken } from "../middlewares/auth.middleware.js";
 
 export const registerUser = async (req, res) => {
   try {
@@ -12,7 +13,7 @@ export const registerUser = async (req, res) => {
     const existingUser = await User.findOne({ $or: [{ email }, { name }] });
 
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "User already existsss" });
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
@@ -23,10 +24,13 @@ export const registerUser = async (req, res) => {
       password: hashPassword,
     });
 
+    const token = createToken(user._id, user.email);
+
     res.status(201).json({
       success: true,
       message: "User Registered successfully",
       user,
+      token
     });
   } catch (err) {
     res.status(400).json({
@@ -65,15 +69,69 @@ export const loginUser = async (req, res) => {
       });
     }
 
+    const token = createToken(user._id, user.email);
+
     res.status(200).json({
       success: true,
       message: "User Logged In successfully",
       user,
+      token
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: error.message,
     });
+  }
+};
+
+
+
+export const isLogin = async (req, res) => {
+  try {
+      const user = await User.findById(req.user._id);
+
+      if (!user) {
+          return res.status(200).json({
+              success: true,
+              isLogin: false,
+          });
+      }
+
+      if (user) {
+          return res.status(200).json({
+              success: true,
+              isLogin: true,
+              user,
+          });
+      }
+  } catch (err) {
+      res.status(500).json({
+          success: false,
+          message: err.message,
+      });
+  }
+};
+
+export const getAllUsers = async (req, res) => {
+  try {
+      const users = await User.find();
+
+      if (!users || users.length === 0) {
+          return res.status(404).json({
+              success: false,
+              message: "No users found",
+          });
+      }
+
+      res.status(200).json({
+          success: true,
+          users,
+      });
+  } catch (err) {
+      res.status(500).json({
+          success: false,
+          message: err.message,
+      });
   }
 };

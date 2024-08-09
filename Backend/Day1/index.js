@@ -10,7 +10,7 @@ const mongoUrl = "mongodb://127.0.0.1/sampleServer";
 
 import userRouter from "./routes/auth.route.js";
 
-app.use("/api/v1/users", userRouter);
+app.use("/api/v1/user", userRouter);
 
 mongoose
   .connect(mongoUrl)
