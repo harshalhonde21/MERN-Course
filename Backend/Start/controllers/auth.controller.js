@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../models/auth.model.js";
+import { createToken } from "../middlewares/auth.middleware.js";
 
 export const registerUser = async (req, res) => {
     try {
@@ -19,10 +20,13 @@ export const registerUser = async (req, res) => {
             password: hashPass,
         });
 
+        const token = createToken(user._id, user.email)
+
         res.status(201).json({
             success: true,
-            message: "User is registered",
+            message: "User is registered after functionality of jwt",
             user,
+            token
         });
     } catch (error) {
         res.status(400).json({
@@ -63,10 +67,14 @@ export const loginUser = async (req, res) => {
             })
         }
 
+        
+        const token = createToken(user._id, user.email)
+
         res.status(200).json({
             success:true,
             message:"user is login success",
-            user
+            user,
+            token
         })
 
     } catch (error) {
@@ -76,4 +84,32 @@ export const loginUser = async (req, res) => {
         })
     }
 
+}
+
+
+export const isLogin = async(req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+
+        if(!user) {
+            return res.status(200).json({
+                success:true,
+                isLogin:false
+            })
+        }
+
+        if(user) {
+            return res.status(200).json({
+                success:true,
+                isLogin:true,
+                user
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message:error.message
+        })
+    }
 }
