@@ -35,7 +35,7 @@ const studentSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        required: false, // Image is not mandatory
+        required: false, // image bad me dalege jab multer padege
     },
     registrationDate: {
         type: Date,
