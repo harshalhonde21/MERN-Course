@@ -3,34 +3,30 @@ import Student from "../models/student.model.js";  // Import the Student model
 
 export const registerStudent = async (req, res) => {
     try {
-        const { name, email, password, age, marks, address, phone } = req.body;
-
-        // Check if a student with the same email already exists
+        const { name, email, age, marks, address, phone } = req.body;
         const existingStudent = await Student.findOne({ email });
 
         if (existingStudent) {
-            return res.status(400).json({ message: "Student already exists with this email" });
+            return res.status(400).json({
+                success: false,
+                message: "Student already exists",
+            });
         }
 
-        // Hash the password before saving
-        const hashPass = await bcrypt.hash(password, 10);
-
-        // Create a new student entry
         const student = await Student.create({
             name,
             email,
-            password: hashPass,
             age,
             marks,
             address,
             phone,
+            image: req.file ? req.file.filename : null, 
         });
 
-        // Respond with success message and student data
         res.status(201).json({
             success: true,
-            message: "Student is registered successfully",
-            student
+            message: "Student created successfully",
+            student,
         });
     } catch (error) {
         res.status(400).json({
@@ -39,6 +35,7 @@ export const registerStudent = async (req, res) => {
         });
     }
 };
+
 
 
 export const getStudents = async (req, res) => {
