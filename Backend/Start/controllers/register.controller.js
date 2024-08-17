@@ -20,6 +20,7 @@ export const registerStudent = async (req, res) => {
             marks,
             address,
             phone,
+            image: req.file ? req.file.filename : null
         });
 
         res.status(201).json({
