@@ -1,4 +1,5 @@
 import Student from "../models/register.model.js";
+import cloudinary from "../config/cloudinary.js"
 
 export const registerStudent = async (req, res) => {
     try {
@@ -13,6 +14,12 @@ export const registerStudent = async (req, res) => {
             });
         }
 
+        let imageUrl = null;
+        if(req.file){
+            const result  = await cloudinary.uploader.upload(req.file.path)
+            imageUrl = result.secure_url;
+        }
+
         const student = await Student.create({
             name,
             email,
@@ -20,7 +27,7 @@ export const registerStudent = async (req, res) => {
             marks,
             address,
             phone,
-            image: req.file ? req.file.filename : null
+            image: imageUrl
         });
 
         res.status(201).json({

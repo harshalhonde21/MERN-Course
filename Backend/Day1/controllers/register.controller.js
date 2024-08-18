@@ -70,3 +70,90 @@ export const getStudents = async (req, res) => {
         });
     }
 };
+export const updateStudent = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, age, marks, address, phone } = req.body;
+
+        let student = await Student.findById(id);
+
+        if (!student) {
+            return res.status(404).json({
+                success: false,
+                message: "Student not found",
+            });
+        }
+
+        let imageUrl = student.image;
+
+        if (req.file) {
+            // Delete the existing image from Cloudinary if it exists
+            if (imageUrl) {
+                const publicId = imageUrl.split('/').pop().split('.')[0];
+                await cloudinary.uploader.destroy(publicId);
+            }
+
+            // Upload the new image to Cloudinary
+            const result = await cloudinary.uploader.upload(req.file.path);
+            imageUrl = result.secure_url;
+        }
+
+        student = await Student.findByIdAndUpdate(
+            id,
+            {
+                name,
+                email,
+                age,
+                marks,
+                address,
+                phone,
+                image: imageUrl,
+            },
+            { new: true } // Return the updated student
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Student updated successfully",
+            student,
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+export const deleteStudent = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const student = await Student.findById(id);
+
+        if (!student) {
+            return res.status(404).json({
+                success: false,
+                message: "Student not found",
+            });
+        }
+
+        // Delete the image from Cloudinary if it exists
+        if (student.image) {
+            const publicId = student.image.split('/').pop().split('.')[0];
+            await cloudinary.uploader.destroy(publicId);
+        }
+
+        await Student.findByIdAndDelete(id);
+
+        res.status(200).json({
+            success: true,
+            message: "Student deleted successfully",
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
