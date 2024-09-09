@@ -11,7 +11,7 @@ const blogSchema = new mongoose.Schema({
         required: true,
     },
     author: {
-        type: mongoose.Schema.Types.ObjectId, // Reference to the User model
+        type: mongoose.Schema.Types.ObjectId,
         ref: "newUserStart",
         required: true,
     },
@@ -21,7 +21,16 @@ const blogSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        default: null, // URL or path to the image
+        default: null,
+    },
+    status: {
+        type: String,
+        enum: ["draft", "scheduled", "published"],
+        default: "draft",
+    },
+    scheduledAt: {
+        type: Date,
+        default: null, // Only used when scheduling a future publish date
     },
     createdAt: {
         type: Date,
@@ -30,7 +39,7 @@ const blogSchema = new mongoose.Schema({
     updatedAt: {
         type: Date,
         default: Date.now,
-    }
+    },
 });
 
 // Middleware to update the `updatedAt` field on document update
@@ -42,5 +51,4 @@ blogSchema.pre("save", function (next) {
 });
 
 const Blog = mongoose.model("Blog", blogSchema);
-
 export default Blog;

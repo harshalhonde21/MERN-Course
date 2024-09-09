@@ -2,7 +2,14 @@ import Blog from "../models/blog.model.js";
 
 export const addBlog = async (req, res) => {
     try {
-        const { title, content, author, tags, image } = req.body;
+        const { title, content, author, tags, image, scheduledAt } = req.body;
+
+        let status = "draft";
+        if (scheduledAt && new Date(scheduledAt) > new Date()) {
+            status = "scheduled";
+        } else {
+            status = "published"; // Publish immediately if no scheduled date is provided
+        }
 
         const newBlog = new Blog({
             title,
@@ -10,6 +17,8 @@ export const addBlog = async (req, res) => {
             author,
             tags,
             image,
+            status,
+            scheduledAt: status === "scheduled" ? new Date(scheduledAt) : null,
         });
 
         await newBlog.save();
@@ -61,7 +70,10 @@ export const updateBlog = async (req, res) => {
 
 export const getAllBlogs = async (req, res) => {
     try {
-        const blogs = await Blog.find().populate("author", "name email"); // Populate author details from the User model
+        const { status } = req.query; // Optional status filter
+
+        const query = status ? { status } : {};
+        const blogs = await Blog.find(query).populate("author", "name email");
 
         res.status(200).json({ blogs });
     } catch (error) {
