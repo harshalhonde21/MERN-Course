@@ -2,14 +2,23 @@ import Blog from "../models/blog.model";
 
 export const addBlog = async(req, res) => {
     try {
-        const { title, content, author, tags, image } = req.body;
+        const { title, content, author, tags, image, scheduledAt } = req.body;
+
+        let status = "draft";
+
+        if(scheduledAt && new Date(scheduledAt) > new Date()){
+            status = "scheduled";
+        }else{
+            status = "published"
+        }
 
         const newBlog = new Blog({
             title,
             content,
             author,
             tags,
-            image
+            image,
+            scheduledAt: status === "scheduled" ? new Date(scheduledAt) : null,
         })
 
         await newBlog.save();
@@ -89,7 +98,14 @@ export const updateBlog = async(req, res) => {
 
 export const getAllBlogs = async(req, res) => {
     try {
-        const blogs = await Blog.find().populate("author", "name email");
+
+        const { status } = req.query;
+
+        const query = status ? { status } : {};
+
+        // const blogs = await Blog.find().populate("author", "name email");
+
+        const blogs = await Blog.find(query).populate("author", "name email");
 
         res.status(200).json({
             success: true,
