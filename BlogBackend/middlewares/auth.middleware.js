@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { User } from "../models/auth.model.js";
+import  User from "../models/auth.model.js";
 
 const secret = "helloguyswearelearningmernstackcoursesodontseehere";
 

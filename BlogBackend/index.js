@@ -12,6 +12,10 @@ const port = 5500;
 const MONGO_URI = "mongodb://localhost:27017/MernBlogApplication";
 
 
+import authRouter from "./routes/auth.route.js"
+import blogRouter from "./routes/blog.route.js"
+
+
 cron.schedule("* * * * *", async() => {
     try {
         const blogToBePublished = await Blog.find({
@@ -28,6 +32,9 @@ cron.schedule("* * * * *", async() => {
         console.log("Error publishing blog", error)
     }
 })
+
+app.use("/api/v1/user", authRouter);                    
+app.use("/api/v2/blog", blogRouter);
 
 mongoose
 .connect(MONGO_URI)
