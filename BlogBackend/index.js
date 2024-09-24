@@ -14,6 +14,7 @@ const MONGO_URI = "mongodb://localhost:27017/MernBlogApplication";
 
 import authRouter from "./routes/auth.route.js"
 import blogRouter from "./routes/blog.route.js"
+import commentRouter from "./routes/comment.route.js"
 
 
 cron.schedule("* * * * *", async() => {
@@ -35,6 +36,7 @@ cron.schedule("* * * * *", async() => {
 
 app.use("/api/v1/user", authRouter);                    
 app.use("/api/v2/blog", blogRouter);
+app.use("/api/v3/comment", commentRouter);
 
 mongoose
 .connect(MONGO_URI)
