@@ -60,3 +60,67 @@ export const getAllComment = async(req, res) => {
         })
     }
 }
+
+export const editComment = async(req,res) => {
+    try {
+        const { content } = req.body;
+        const { commentId } = req.body;
+        const userId = req.user.id;
+
+        const comment = await Comment.findById(commentId);
+
+        if(!comment){
+            return res.status(404).json({
+                success:false,
+                message:"Comment not found"
+            })
+        }
+
+        if(comment.author.toString() !== userId){
+            return res.status(401).json({
+                success:false,
+                message: "You are not authorized to edit this comment"
+            })
+        }
+
+        comment.content = content;
+
+        await comment.save();
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+}
+
+
+
+export const deleteComment = async(req,res) => {
+    try {
+        const { commentId } = req.body;
+        const userId = req.user.id;
+
+        const comment = await Comment.findById(commentId);
+
+        if(!comment){
+            return res.status(404).json({
+                success:false,
+                message:"Comment not found"
+            })
+        }
+
+        if(comment.author.toString() !== userId){
+            return res.status(401).json({
+                success:false,
+                message: "You are not authorized to delete this comment"
+            })
+        }
+
+        await comment.remove();
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+}

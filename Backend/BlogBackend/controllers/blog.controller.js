@@ -1,19 +1,29 @@
 import Blog from "../models/blog.model.js";
 
-export const addBlog = async(req, res) => {
+export const addBlog = async (req, res) => {
     try {
         const { title, content, tags, image, scheduledAt } = req.body;
 
         // Author is set by the isAuth middleware
-        const author = req.user._id; 
+        const author = req.user._id;
 
-        let status = "draft";                    
+        let status = "draft";
 
-        if(scheduledAt && new Date(scheduledAt) > new Date()){
+        if (scheduledAt && new Date(scheduledAt) > new Date()) {
             status = "scheduled";
         } else {
             status = "published";
         }
+
+        // Extract mentions from the content using @username
+        const mentionRegex = /@(\w+)/g;
+        const mentionedUsernames = [...content.matchAll(mentionRegex)].map(match => match[1]);
+
+        // Find mentioned users in the database
+        const mentionedUsers = await User.find({ name: { $in: mentionedUsernames } });
+
+        // Get the ObjectId of mentioned users
+        const mentionIds = mentionedUsers.map(user => user._id);
 
         const newBlog = new Blog({
             title,
@@ -23,6 +33,7 @@ export const addBlog = async(req, res) => {
             image,
             status,
             scheduledAt: status === "scheduled" ? new Date(scheduledAt) : null,
+            mentions: mentionIds, // Store the ObjectIds of mentioned users
         });
 
         await newBlog.save();
@@ -101,7 +112,7 @@ export const updateBlog = async(req, res) => {
     }
 }
 
-export const getAllBlogs = async(req, res) => {
+export const getAllBlogs = async (req, res) => {
     try {
         const { status } = req.query;
 
@@ -115,7 +126,9 @@ export const getAllBlogs = async(req, res) => {
             query.status = "published";
         }
 
-        const blogs = await Blog.find(query).populate("author", "name email");
+        const blogs = await Blog.find(query)
+            .populate("author", "name email")
+            .populate("mentions", "name email"); // Populate the mentions field
 
         res.status(200).json({
             success: true,
